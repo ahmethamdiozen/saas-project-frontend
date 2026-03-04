@@ -29,7 +29,6 @@ import {
   Pin,
   PinOff,
   X,
-  Zap,
   Minimize2
 } from 'lucide-react';
 import api from '../services/api';
