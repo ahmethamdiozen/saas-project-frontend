@@ -109,9 +109,9 @@ export default function App() {
 
   return (
     <NotificationProvider>
-      <div className="h-screen w-full flex flex-col bg-[#030712] text-white selection:bg-primary/30 overflow-hidden">
+      <div className="min-h-screen w-full flex flex-col bg-[#030712] text-white selection:bg-primary/30 overflow-y-auto">
         <Navbar />
-        <main className={`flex-grow ${isDashboard ? 'pt-16' : 'pt-24 px-6 max-w-7xl mx-auto w-full'} transition-all duration-500 flex flex-col overflow-hidden`}>
+        <main className={`flex-grow ${isDashboard ? 'pt-16' : 'pt-24 px-6 max-w-7xl mx-auto w-full'} transition-all duration-500 flex flex-col`}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
