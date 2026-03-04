@@ -1,7 +1,7 @@
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Zap, LayoutDashboard, User as UserIcon, LogOut } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 // Providers
 import { NotificationProvider, useNotifications } from './context/NotificationContext';

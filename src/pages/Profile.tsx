@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Shield, CreditCard, Calendar, Zap, LogOut, RefreshCcw, Loader2 as LucideLoader } from 'lucide-react';
+import { User, Mail, Shield, CreditCard, Calendar, Zap, LogOut, RefreshCcw } from 'lucide-react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 

@@ -2,22 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import axios from 'axios';
+
 import { 
   Plus, 
   Upload, 
   FileText, 
   MessageSquare, 
   Send, 
-  CheckCircle2, 
   Loader2, 
-  RefreshCcw,
-  Search,
   BookOpen,
   FolderPlus,
   Folder,
   Trash2,
-  Layers,
   ArrowLeft,
   CheckSquare,
   Square,
@@ -29,13 +25,11 @@ import {
   ChevronDown,
   ArrowRight,
   Link as LinkIcon,
-  Clock,
   MoreVertical,
   Pin,
   PinOff,
   X,
   Zap,
-  Maximize2,
   Minimize2
 } from 'lucide-react';
 import api from '../services/api';
@@ -98,7 +92,6 @@ export default function Dashboard() {
   const [modalSelectedDocs, setModalSelectedDocs] = useState<string[]>([]);
   const [attachSelectedDocs, setAttachSelectedDocs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploadingToProject, setUploadingToProject] = useState<string | null>(null);
 
   // Chat State
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -239,7 +232,6 @@ export default function Dashboard() {
   const handleFileUpload = async (projectId: string | null, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    setUploadingToProject(projectId || 'global');
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
     try {
@@ -249,8 +241,6 @@ export default function Dashboard() {
       fetchData(true);
     } catch (err) {
       showToast("Upload failed", "error");
-    } finally {
-      setUploadingToProject(null);
     }
   };
 

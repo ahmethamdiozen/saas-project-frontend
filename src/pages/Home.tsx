@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Star, Zap, Shield, Globe } from 'lucide-react';
+import { ArrowRight, Star, Zap, Shield, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const features = [

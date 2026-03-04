@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check, Zap } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const tiers = [
