@@ -56,9 +56,15 @@ export default function Profile() {
     fetchData();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // even if server call fails, clear local session
+    } finally {
+      localStorage.removeItem('access_token');
+      navigate('/login');
+    }
   };
 
   if (loading) return (
@@ -137,7 +143,7 @@ export default function Profile() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400 font-medium">Status</span>
-                  <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter ${sub?.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                     {sub?.status || 'Inactive'}
                   </span>
                 </div>

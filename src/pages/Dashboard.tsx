@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import { useNotifications } from '../context/NotificationContext';
+import { useDocumentStatus, type DocumentStatusEvent } from '../hooks/useDocumentStatus';
 
 // --- TYPES ---
 interface Project {
@@ -124,12 +125,38 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  // Fallback polling — WebSocket handles real-time; this is a safety net
   useEffect(() => {
-    const hasProcessing = allDocs.some(d => d.status === 'processing');
-    const intervalTime = hasProcessing ? 5000 : 30000;
-    const interval = setInterval(() => fetchData(true), intervalTime);
+    const interval = setInterval(() => fetchData(true), 30000);
     return () => clearInterval(interval);
-  }, [allDocs]);
+  }, []);
+
+  useDocumentStatus((event: DocumentStatusEvent) => {
+    if (event.type === 'document_status') {
+      setAllDocs(prev =>
+        prev.map(d =>
+          d.id === event.document_id
+            ? { ...d, status: event.status, page_count: event.page_count }
+            : d
+        )
+      );
+      setProjects(prev =>
+        prev.map(p => ({
+          ...p,
+          documents: p.documents.map(d =>
+            d.id === event.document_id
+              ? { ...d, status: event.status, page_count: event.page_count }
+              : d
+          ),
+        }))
+      );
+      if (event.status === 'ready') {
+        showToast(`"${event.filename}" is ready!`, 'success');
+      } else if (event.status === 'error') {
+        showToast(`Processing failed for "${event.filename}"`, 'error');
+      }
+    }
+  });
 
   useEffect(() => {
     if (activeSessionId) fetchMessages(activeSessionId);
@@ -573,7 +600,7 @@ export default function Dashboard() {
                             <div key={doc.id} className={`px-8 py-5 flex items-center justify-between transition-all border-b border-white/5 last:border-b-0 hover:bg-white/[0.03] ${isSelected ? 'bg-primary/5' : ''}`}>
                               <div className="flex items-center gap-4 flex-grow min-w-0"><FileText size={18} className="text-gray-600" /><p className="text-sm font-bold text-white truncate">{doc.filename}</p></div>
                               <div className="flex items-center gap-6">
-                                <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${doc.status === 'ready' ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'}`}>{doc.status}</span>
+                                <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${doc.status === 'ready' ? 'bg-green-500/10 text-green-400' : doc.status === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'}`}>{doc.status}</span>
                                 <div className="flex items-center gap-2 border-l border-white/10 pl-6">
                                   <button onClick={() => handleEditDoc(doc.id, doc.filename)} className="p-2 text-gray-500 hover:text-white transition-colors"><Edit2 size={14} /></button>
                                   <button onClick={() => handleDeleteDoc(doc.id, false)} className="p-2 text-gray-500 hover:text-red-500 transition-colors"><X size={14} /></button>

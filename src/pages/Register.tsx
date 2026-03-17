@@ -11,11 +11,18 @@ export default function Register() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const hasMinLength = password.length >= 8;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!hasMinLength || !hasSpecialChar) {
+      setError('Password must be at least 8 characters and contain a special character.');
+      return;
+    }
     setLoading(true);
     setError('');
-    
+
     try {
       await api.post('/auth/register', { email, password });
       // Redirect to login after successful registration
@@ -85,12 +92,15 @@ export default function Register() {
           </div>
 
           <div className="space-y-3 px-1">
-             {['At least 8 characters', 'One special character'].map((text, i) => (
-               <div key={i} className="flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                 <CheckCircle2 size={12} className="text-green-500/50" />
-                 {text}
-               </div>
-             ))}
+            {([
+              { text: 'At least 8 characters', met: hasMinLength },
+              { text: 'One special character', met: hasSpecialChar },
+            ] as const).map(({ text, met }) => (
+              <div key={text} className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${met ? 'text-green-400' : 'text-gray-500'}`}>
+                <CheckCircle2 size={12} className={met ? 'text-green-400' : 'text-green-500/30'} />
+                {text}
+              </div>
+            ))}
           </div>
 
           <button

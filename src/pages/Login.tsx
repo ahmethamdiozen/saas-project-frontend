@@ -17,8 +17,8 @@ export default function Login() {
     setError('');
     
     try {
-      const res = await api.post('/auth/login', { email, password });
-      localStorage.setItem('access_token', res.data.access_token);
+      await api.post('/auth/login', { email, password });
+      localStorage.setItem('access_token', 'true');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Something went wrong. Please check your credentials.');
